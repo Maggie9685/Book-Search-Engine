@@ -1,32 +1,61 @@
 import { gql } from '@apollo/client';
 
-export const ADD_THOUGHT = gql`
-  mutation addThought($thoughtText: String!, $thoughtAuthor: String!) {
-    addThought(thoughtText: $thoughtText, thoughtAuthor: $thoughtAuthor) {
-      _id
-      thoughtText
-      thoughtAuthor
-      createdAt
-      comments {
-        _id
-        commentText
-      }
+//loginUser(email: String, password: String): Auth
+export const LOGIN_USER = gql`
+  mutation loginUser(email: String, password: String) {
+    loginUser(email: $email, password: $password) {
+      token: String
+      user: User
     }
   }
 `;
 
-export const ADD_COMMENT = gql`
-  mutation addComment($thoughtId: ID!, $commentText: String!) {
-    addComment(thoughtId: $thoughtId, commentText: $commentText) {
-      _id
-      thoughtText
-      thoughtAuthor
-      createdAt
-      comments {
-        _id
-        commentText
-        createdAt
-      }
+//addUser(username: String, email: String, password: String): Auth
+export const ADD_USER = gql`
+  mutation addUser(username: String, email: String, password: String) {
+    addUser(username: $username, email: $email, password: $password) {
+      token: String
+      user: User
     }
   }
 `;
+
+//saveBook(author: [author], description: String, title: String, bookId: ID, image: Image, link: String): User
+export const SAVE_BOOK = gql`
+  mutation saveBook(author: [author], description: String, title: String, bookId: ID, image: String, link: String) {
+    saveBook(author: $author, description: $description, title: $title, bookId: $bookId, image: $image, link: $link) {
+      _id
+      username
+      email
+      bookCount
+      savedBooks {
+        bookId
+        authors
+        description
+        title
+        image
+        link
+      }
+    }
+  }
+`;  
+
+//removeBook(bookId: ID): User
+export const REMOVE_BOOK = gql`
+  mutation removeBook(bookId: ID) {
+    removeBook(bookId: $bookId) {
+      _id
+      username
+      email
+      bookCount
+      savedBooks {
+        bookId
+        authors
+        description
+        title
+        image
+        link
+      }
+    }
+  }
+`;  
