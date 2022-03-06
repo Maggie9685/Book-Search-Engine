@@ -15,6 +15,8 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  const [createUser, { error }] = useMutation(ADD_USER);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
@@ -30,7 +32,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
 
-    const [createUser, { error }] = useMutation(ADD_USER);
+    
 
     try {
       const response = await createUser(userFormData);
