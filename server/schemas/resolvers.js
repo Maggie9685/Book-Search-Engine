@@ -14,7 +14,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError('Not logged in');
-    },
+    }
   },
  
   Mutation: {
@@ -44,22 +44,25 @@ const resolvers = {
       return { token, user };
     },
 
-    //saveBook(author: [String], description: String, title: String, bookId: ID, image: String, link: String): User
+    //saveBook(author: [String], description: String, title: String, bookId: String, image: String, link: String): User
     saveBook: async (parent, args, context) => {
+      
       console.log(context.user);
       console.log(args);
+      console.log(args.bookId);
+
       return User.findOneAndUpdate(
         { _id: context.user._id },
-        { $push: { saveBook: { ...args } } },
+        { $push: { savedBooks: args } },
         { new: true }
       );
     },
 
     //removeBook(bookId: ID): User
-    removeBook: async (parent, { bookId }) => {
+    removeBook: async (parent, { bookId }, context) => {
       return User.findOneAndUpdate(
-        { _id: thoughtId },
-        { $pull: { comments: { _id: commentId } } },
+        { _id: context.user._id },
+        { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }
       );
     },
