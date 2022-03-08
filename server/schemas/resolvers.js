@@ -7,13 +7,12 @@ const resolvers = {
     me: async (parent, args, context) => {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
-          .select('-__v -password')
-          .populate('savedBooks');
+          .select('-__v -password');
 
         return userData;
       }
 
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError('User not logged in');
     }
   },
  
@@ -45,28 +44,37 @@ const resolvers = {
     },
 
     //saveBook(author: [String], description: String, title: String, bookId: String, image: String, link: String): User
-    saveBook: async (parent, args, context) => {
-      
-      console.log(context.user);
-      console.log(args);
-      console.log(args.bookId);
+    saveBook: async (parent, { bookData }, context) => {
+      console.log(bookData);
+      if (context.user) {
+        const updatedsaveBook = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { savedBooks: bookData } },
+          { new: true }
+        );
 
-      return User.findOneAndUpdate(
-        { _id: context.user._id },
-        { $push: { savedBooks: args } },
-        { new: true }
-      );
+        return updatedsaveBook;
+      }
+
+      throw new AuthenticationError('You need to log in first!');
     },
 
     //removeBook(bookId: ID): User
     removeBook: async (parent, { bookId }, context) => {
-      return User.findOneAndUpdate(
-        { _id: context.user._id },
-        { $pull: { savedBooks: { bookId: bookId } } },
-        { new: true }
-      );
+      if (context.user) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: { bookId } } },
+          { new: true }
+        );
+
+        return updatedUser;
+      }
+
+      throw new AuthenticationError('You need to log in first!');
     },
   },
 };
+
 
 module.exports = resolvers;
